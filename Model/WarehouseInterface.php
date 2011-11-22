@@ -11,16 +11,26 @@ namespace Vespolina\InventoryBundle\Model;
  * @author Daniel Kucharski <daniel@xerias.be>
  * @author Richard Shank <develop@zestic.com>
  */
-interface InventoryInterface
+interface WarehouseInterface
 {
 
     /**
-     * An inventory object should at least have a Stock Keeping Unit identifier
+     * Get the address (street, nr, ....) where the warehouse is located
      *
      * @abstract
-     * @return void
+     * @return AddressInterface
      */
-    function getSKU();
+    function getAddress();
 
-    function setSKU($sku);
+    /**
+     * Name of this warehouse
+     *
+     * @abstract
+     * @return string
+     */
+    function getName();
+
+    function setName($name);
+
+
 }
