@@ -30,14 +30,14 @@ interface StorageLocationInterface
      * @abstract
      * @return string
      */
-    function getAddressDescription();
+    function getName();
 
     /**
-     * Get the storage location type (eg. picking area, goods receipt area, high rack area, ... )
+     * Get the storage type (eg. picking area, goods receipt area, high rack area, ... )
      * @abstract
      * @return void
      */
-    function getType();
+    function getStorageType();
 
     /**
      * Return the warehouse where this storage location is located
@@ -47,11 +47,18 @@ interface StorageLocationInterface
      */
     function getWarehouse();
 
-    function setAddress($address);
 
-    function setAddressDescription($addressDescription);
 
     function setName($name);
 
+    /**
+     * Specify the storage location type (eg. "goods receipt area", "storage", "picking area" )
+     *
+     * @abstract
+     * @param $storageType
+     * @return void
+     */
+    function setStorageType($storageType);
+    
     function setWarehouse(WarehouseInterface $warehouse);
 }

@@ -30,6 +30,8 @@ interface WarehouseInterface
      */
     function getName();
 
+    function setAddress($address);
+    
     function setName($name);
 
 

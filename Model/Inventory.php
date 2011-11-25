@@ -8,11 +8,81 @@
 namespace Vespolina\InventoryBundle\Model;
 
 use Vespolina\InventoryBundle\Model\InventoryInterface;
+use Vespolina\ProductBundle\Model\Identifier\IdentifierInterface;  //TODO move to CoreBundle
 
 /**
+ * @author Daniel Kucharski <daniel@xerias.be>
  * @author Richard Shank <develop@zestic.com>
  */
 abstract class Inventory implements InventoryInterface
 {
+
+    protected $detailedCount;
+    protected $identifier;
+    protected $count;
+    protected $updatedAt;
+    
+
+    /**
+     * @inheritdoc
+     */
+    function getDetailedCount($granularity)
+    {
+
+        return $this->detailedCount;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    function getIdentifier()
+    {
+
+        return $this->identifier;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    function getCount()
+    {
+
+        return $this->count;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    function getUpdatedAt()
+    {
+
+        return $this->updatedAt;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    function setDetailedCount($detailedCount)
+    {
+        $this->detailedCount = $detailedCount;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    function setIdentifier(IdentifierInterface $identifier)
+    {
+
+        $this->identifier = $identifier;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    function setCount($count)
+    {
+
+        $this->count = $count;
+    }
 
 }
