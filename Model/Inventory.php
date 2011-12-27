@@ -76,4 +76,18 @@ abstract class Inventory implements InventoryInterface
             throw new \Exception('not implemented');
         }
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function removeFromStock($items, $location = null)
+    {
+        if ($items > $this->count) {
+            throw new \RangeException(sprintf('There are only %s items in the inventory, so %s items cannot be removed', $this->count, $items));
+        }
+        $this->count -= (int)$items;
+        if ($location) {
+            throw new \Exception('not implemented');
+        }
+    }
 }

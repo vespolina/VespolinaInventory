@@ -59,4 +59,12 @@ interface InventoryInterface
      * @param optional $location
      */
     function addToStock($items, $location = null);
+
+    /**
+     * Remove items from the inventory.
+     *
+     * @param integer $items
+     * @param optional $location
+     */
+    function removeFromStock($items, $location = null);
 }
