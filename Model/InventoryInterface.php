@@ -50,8 +50,6 @@ interface InventoryInterface
      */
     function getUpdatedAt();
 
-    function setDetailedCount($detailedCount);
-
     function setIdentifier(IdentifierInterface $identifier);
 
     /**

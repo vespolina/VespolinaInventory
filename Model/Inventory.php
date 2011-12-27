@@ -60,14 +60,6 @@ abstract class Inventory implements InventoryInterface
     /**
      * @inheritdoc
      */
-    function setDetailedCount($detailedCount)
-    {
-        $this->detailedCount = $detailedCount;
-    }
-
-    /**
-     * @inheritdoc
-     */
     function setIdentifier(IdentifierInterface $identifier)
     {
 
@@ -84,5 +76,4 @@ abstract class Inventory implements InventoryInterface
             throw new \Exception('not implemented');
         }
     }
-
 }
