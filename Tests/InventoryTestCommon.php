@@ -14,5 +14,10 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  */
 abstract class InventoryTestCommon extends WebTestCase
 {
+    protected function createInventory()
+    {
+        $inv = $this->getMockForAbstractClass('\Vespolina\InventoryBundle\Model\Inventory');
 
+        return $inv;
+    }
 }

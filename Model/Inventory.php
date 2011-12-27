@@ -16,12 +16,10 @@ use Vespolina\ProductBundle\Model\Identifier\IdentifierInterface;  //TODO move t
  */
 abstract class Inventory implements InventoryInterface
 {
-
     protected $detailedCount;
     protected $identifier;
     protected $count;
     protected $updatedAt;
-    
 
     /**
      * @inheritdoc
@@ -79,10 +77,12 @@ abstract class Inventory implements InventoryInterface
     /**
      * @inheritdoc
      */
-    function setCount($count)
+    public function addToStock($items, $location = null)
     {
-
-        $this->count = $count;
+        $this->count += (int)$items;
+        if ($location) {
+            throw new \Exception('not implemented');
+        }
     }
 
 }

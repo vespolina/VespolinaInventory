@@ -15,8 +15,6 @@ use Vespolina\ProductBundle\Model\Identifier\IdentifierInterface;  //TODO move t
  */
 interface InventoryInterface
 {
-
-
     /**
      * Retrieve a detailed count per storage location for the given inventory set
      *
@@ -25,7 +23,6 @@ interface InventoryInterface
      * @return Collection (eg.  [storage_location_A] -> 2, [storage_location_B2 -> 4] )
      */
     function getDetailedCount($granularity);
-
 
     /**
      * An inventory object should at least have an unique ID (eg. SKU)
@@ -44,7 +41,6 @@ interface InventoryInterface
      */
     function getCount();
 
-
     /**
      * When was this inventory statistic lastly updated
      * (eg. this could a full day if inventory data comes from an external party )
@@ -54,13 +50,15 @@ interface InventoryInterface
      */
     function getUpdatedAt();
 
-
     function setDetailedCount($detailedCount);
 
     function setIdentifier(IdentifierInterface $identifier);
 
-    function setCount($count);
-
-
-
+    /**
+     * Add items to the inventory.
+     *
+     * @param integer $items
+     * @param optional $location
+     */
+    function addToStock($items, $location = null);
 }
