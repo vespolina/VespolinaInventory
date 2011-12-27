@@ -14,5 +14,42 @@ use Vespolina\InventoryBundle\Model\InventoryManagerInterface;
  */
 abstract class InventoryManager implements InventoryManagerInterface
 {
+    /**
+     * @inheritdoc
+     */
+    public function addToStock($inventory, $items, $location = null)
+    {
+        $this->onHand += (int)$items;
+        $this->available += (int)$items;
+        if ($location) {
+            throw new \Exception('not implemented');
+        }
+    }
 
+    /**
+     * @inheritdoc
+     */
+    public function removeFromStock($inventory, $items, $location = null)
+    {
+        if ($items > $this->onHand) {
+            throw new \RangeException(sprintf('There are only %s items in the inventory, so %s items cannot be removed', $this->count, $items));
+        }
+        $this->onHand -= (int)$items;
+        $this->available -= (int)$items;
+        if ($location) {
+            throw new \Exception('not implemented');
+        }
+    }
+
+
+    /**
+     * @inheritdoc
+     */
+    public function reserve($items = null)
+    {
+        $items = $items ? $items : 1;
+
+        $this->available -= $items;
+
+    }
 }

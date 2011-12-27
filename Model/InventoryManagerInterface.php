@@ -18,6 +18,33 @@ use Vespolina\ProductBundle\Model\Identifier\IdentifierInterface;  //TODO move t
  */
 interface InventoryManagerInterface
 {
+    /**
+     * Add items to the inventory.
+     *
+     * @param Vespolina\InventoryBundle\Model\InventoryInterface $inventory
+     * @param integer $items
+     * @param optional $location
+     */
+    function addToStock($inventory, $items, $location = null);
+
+    /**
+     * Remove items from the inventory.
+     *
+     * @param Vespolina\InventoryBundle\Model\InventoryInterface $inventory
+     * @param integer $items
+     * @param optional $location
+     */
+    function removeFromStock($inventory, $items, $location = null);
+
+    /**
+     * Reserve an number of product items for a specific sale.
+     *
+     * @param Vespolina\InventoryBundle\Model\InventoryInterface $inventory
+     * @param integer the number of items to be reserved, no value defaults to 1
+     *
+     * @return Vespolina\InventoryBundle\Model\InventoryReservationInterface
+     */
+    function reserve($inventory, $items = null);
 
     /**
      * Update the inventory information with the inventory size of a single id
@@ -37,7 +64,6 @@ interface InventoryManagerInterface
                          WarehouseInterface $warehouse = null,
                          StorageLocationInterface $storageLocation);
 
-
     /**
      * Update the inventory information based on the supplied InventoryInterface instance
      *
@@ -47,8 +73,6 @@ interface InventoryManagerInterface
      *
      */
     function updateInventory(InventoryInterface $inventory);
-
-
 
     /**
      * Return the count for a given inventory id.
@@ -63,5 +87,4 @@ interface InventoryManagerInterface
     function getCountForInventory(IdentifierInterface $identifier,
                                   WarehouseInterface $warehouse = null,
                                   StorageLocationInterface $storageLocation = null);
-
 }

@@ -16,10 +16,19 @@ use Vespolina\ProductBundle\Model\Identifier\IdentifierInterface;  //TODO move t
  */
 abstract class Inventory implements InventoryInterface
 {
+    protected $available;
     protected $detailedCount;
     protected $identifier;
-    protected $count;
+    protected $identifierSet;
+    protected $onHand;
+    protected $product;
     protected $updatedAt;
+
+    public function __construct($product, $identifierSet = null)
+    {
+        $this->product = $product;
+        $this->identifierSet = $identifierSet;
+    }
 
     /**
      * @inheritdoc
@@ -37,15 +46,6 @@ abstract class Inventory implements InventoryInterface
     {
 
         return $this->identifier;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    function getCount()
-    {
-
-        return $this->count;
     }
 
     /**
@@ -69,25 +69,16 @@ abstract class Inventory implements InventoryInterface
     /**
      * @inheritdoc
      */
-    public function addToStock($items, $location = null)
+    public function getAvailable()
     {
-        $this->count += (int)$items;
-        if ($location) {
-            throw new \Exception('not implemented');
-        }
+        return $this->available;
     }
 
     /**
      * @inheritdoc
      */
-    public function removeFromStock($items, $location = null)
+    public function getOnHand()
     {
-        if ($items > $this->count) {
-            throw new \RangeException(sprintf('There are only %s items in the inventory, so %s items cannot be removed', $this->count, $items));
-        }
-        $this->count -= (int)$items;
-        if ($location) {
-            throw new \Exception('not implemented');
-        }
+        return $this->onHand;
     }
 }

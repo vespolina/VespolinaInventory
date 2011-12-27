@@ -33,15 +33,6 @@ interface InventoryInterface
     function getIdentifier();
 
     /**
-     * Retrieve the count
-     *
-     * @abstract
-     * @return int
-     *
-     */
-    function getCount();
-
-    /**
      * When was this inventory statistic lastly updated
      * (eg. this could a full day if inventory data comes from an external party )
      *
@@ -53,18 +44,17 @@ interface InventoryInterface
     function setIdentifier(IdentifierInterface $identifier);
 
     /**
-     * Add items to the inventory.
+     * Return the number of items that are available to sell. Affected by reserved items and items sold.
      *
-     * @param integer $items
-     * @param optional $location
+     * @return integer
      */
-    function addToStock($items, $location = null);
+    function getAvailable();
 
     /**
-     * Remove items from the inventory.
+     * Return the number of items in inventory. It is the actual physical count of the item,
+     * regardless of items sold or reserved for a sale.
      *
-     * @param integer $items
-     * @param optional $location
+     * @return integer
      */
-    function removeFromStock($items, $location = null);
+    function getOnHand();
 }
