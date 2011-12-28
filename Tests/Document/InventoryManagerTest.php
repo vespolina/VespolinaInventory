@@ -5,24 +5,29 @@
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
  */
-namespace Vespolina\InventoryBundle\Tests;
+namespace Vespolina\InventoryBundle\Tests\Document;
 
-use Vespolina\InventoryBundle\Tests\InventoryTestCommon;
+use Vespolina\InventoryBundle\Document\InventoryManager;
+use Vespolina\InventoryBundle\Tests\Fixtures\Document\Inventory;
+
+use Symfony\Bundle\DoctrineMongoDBBundle\Tests\TestCase;
 
 /**
  * @author Richard D Shank <develop@zestic.com>
  */
-class InventoryManagerTest extends InventoryTestCommon
+class InventoryManagerTest extends TestCase
 {
     public function testAddToStock()
     {
+        $mgr = $this->createInventoryManager();
+
         $inventory = $this->createInventory();
 
-        $inventory->addToStock(3);
+        $inventory = $mgr->addToStock($inventory, 3);
         $this->assertSame(3, $inventory->getOnHand());
         $this->assertSame(3, $inventory->getAvailable());
 
-        $inventory->addToStock(3);
+        $inventory = $mgr->addToStock($inventory, 3);
         $this->assertSame(6, $inventory->getOnHand());
         $this->assertSame(6, $inventory->getAvailable());
 
@@ -67,5 +72,20 @@ class InventoryManagerTest extends InventoryTestCommon
         $this->setExpectedException('RangeException');
         $inventory = $this->createInventory();
         $inventory->removeFromStock(6);
+    }
+
+    protected function createInventoryManager()
+    {
+        $inv = new InventoryManager(self::createTestDocumentManager(), '\Vespolina\InventoryBundle\Tests\Fixtures\Document\Inventory');
+
+        return $inv;
+    }
+
+    protected function createInventory($product = null, $identifierSet = null)
+    {
+        $product = $product ? $product : 'product';
+        $inv = new Inventory($product, $identifierSet);
+
+        return $inv;
     }
 }

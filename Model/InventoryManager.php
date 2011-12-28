@@ -19,11 +19,12 @@ abstract class InventoryManager implements InventoryManagerInterface
      */
     public function addToStock($inventory, $items, $location = null)
     {
-        $this->onHand += (int)$items;
-        $this->available += (int)$items;
         if ($location) {
             throw new \Exception('not implemented');
         }
+
+        $this->onHand += (int)$items;
+        $this->available += (int)$items;
     }
 
     /**
@@ -39,17 +40,5 @@ abstract class InventoryManager implements InventoryManagerInterface
         if ($location) {
             throw new \Exception('not implemented');
         }
-    }
-
-
-    /**
-     * @inheritdoc
-     */
-    public function reserve($items = null)
-    {
-        $items = $items ? $items : 1;
-
-        $this->available -= $items;
-
     }
 }

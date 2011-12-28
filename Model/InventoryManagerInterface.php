@@ -59,11 +59,12 @@ interface InventoryManagerInterface
      *          =200 : set stock level to 200
      * @return void
      */
+/*
     function updateCount(IdentifierInterface $identifier,
                          $updateOperation,
                          WarehouseInterface $warehouse = null,
                          StorageLocationInterface $storageLocation);
-
+*/
     /**
      * Update the inventory information based on the supplied InventoryInterface instance
      *
@@ -72,7 +73,9 @@ interface InventoryManagerInterface
      * @return void
      *
      */
+/*
     function updateInventory(InventoryInterface $inventory);
+*/
 
     /**
      * Return the count for a given inventory id.
@@ -84,7 +87,9 @@ interface InventoryManagerInterface
      * @param null|StorageLocationInterface $storageLocation
      * @return void
      */
+/*
     function getCountForInventory(IdentifierInterface $identifier,
                                   WarehouseInterface $warehouse = null,
                                   StorageLocationInterface $storageLocation = null);
+*/
 }
