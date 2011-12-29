@@ -91,6 +91,33 @@ abstract class InventoryManager implements InventoryManagerInterface
      */
     public function setInventoryOnHand(InventoryInterface $inventory, $itemCnt, $location = null)
     {
+        if ($location) {
+            throw new \Exception('not implemented');
+        }
 
+        $loadedInventory = $this->lockAndLoad($inventory);
+
+        $ohp = new \ReflectionProperty($this->inventoryClass, 'onHand');
+        $ohp->setAccessible(true);
+        $startingCnt = $ohp->getValue($loadedInventory);
+        $ohp->setValue($loadedInventory, $itemCnt);
+        $cntDifference = $itemCnt - $startingCnt;
+
+        $ap = new \ReflectionProperty($this->inventoryClass, 'available');
+        $ap->setAccessible(true);
+        $available = $ap->getValue($loadedInventory) + $cntDifference;
+        // todo: should a negative available set a back order or need to order state?
+        $ap->setValue($loadedInventory, $available);
+
+
+        $changes = array(
+            'onHand' => $loadedInventory->getOnHand(),
+            'available' => $loadedInventory->getAvailable(),
+        );
+        if ($this->saveAndUnlock($loadedInventory, $changes)) {
+            unset($inventory);
+
+            return $loadedInventory;
+        }
     }
 }

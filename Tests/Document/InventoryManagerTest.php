@@ -56,6 +56,8 @@ class InventoryManagerTest extends TestCase
 
     public function testReserve()
     {
+        $this->markTestIncomplete('reserving items has not been implemented yet');
+
         $mgr = $this->createInventoryManager();
         $inventory = $mgr->createInventory('product');
         $mgr->addToInventory($inventory, 6);
@@ -88,7 +90,7 @@ class InventoryManagerTest extends TestCase
         $this->assertSame(6, $inventory->getOnHand());
         $this->assertSame(6, $inventory->getAvailable());
 
-        $this->markIncomplete('reserving items has not been implemented yet');
+        $this->markTestIncomplete('reserving items has not been implemented yet');
 
         $mgr->reserve($inventory, 'order');
         $inventory = $mgr->setOnHandInventory($inventory, 8);
