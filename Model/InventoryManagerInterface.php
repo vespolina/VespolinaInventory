@@ -19,6 +19,14 @@ use Vespolina\ProductBundle\Model\Identifier\IdentifierInterface;  //TODO move t
 interface InventoryManagerInterface
 {
     /**
+     * @abstract
+     * @param $product
+     *
+     * @return Vespolina\InventoryBundle\Model\InventoryInterface
+     */
+    function createInventory($product);
+
+    /**
      * Add items to the inventory.
      *
      * @param Vespolina\InventoryBundle\Model\InventoryInterface $inventory

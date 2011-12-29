@@ -21,7 +21,7 @@ class InventoryManagerTest extends TestCase
     {
         $mgr = $this->createInventoryManager();
 
-        $inventory = $this->createInventory();
+        $inventory = $mgr->createInventory('product');
 
         $inventory = $mgr->addToStock($inventory, 3);
         $this->assertSame(3, $inventory->getOnHand());
@@ -34,16 +34,37 @@ class InventoryManagerTest extends TestCase
         // todo: set a location for the inventory
     }
 
+    public function testRemoveFromStock()
+    {
+        $mgr = $this->createInventoryManager();
+
+        $inventory = $mgr->createInventory('product');
+        $mgr->addToStock($inventory, 6);
+
+        $mgr->removeFromStock($inventory, 3);
+        $this->assertSame(3, $inventory->getOnHand());
+        $this->assertSame(3, $inventory->getAvailable());
+
+        // todo: set a location for the inventory
+
+        // todo: remove from stock by passing in Reservation object
+
+        $this->setExpectedException('RangeException');
+        $inventory = $mgr->createInventory('product');
+        $mgr->removeFromStock($inventory, 6);
+    }
+
     public function testReserve()
     {
-        $inventory = $this->createInventory();
-        $inventory->addToStock(6);
+        $mgr = $this->createInventoryManager();
+        $inventory = $mgr->createInventory('product');
+        $mgr->addToStock($inventory, 6);
 
-        $reservation = $inventory->reserve();
+        $reservation = $mgr->reserve($inventory);
         $this->assertInstanceOf('\Vespolina\InventoryBundle\Model\ReservationInterface', $reservation);
         $this->assertSame(5, $inventory->getAvailable(), 'no items amount should default to 1');
 
-        $inventory->reserve(2);
+        $mgr->reserve($inventory, 2);
 
         $this->assertSame(3, $inventory->getAvailable());
         $this->assertSame(6, $inventory->getOnHand());
@@ -56,35 +77,10 @@ class InventoryManagerTest extends TestCase
         // todo: set a location for the inventory
     }
 
-    public function testRemoveFromStock()
-    {
-        $inventory = $this->createInventory();
-        $inventory->addToStock(6);
-
-        $inventory->removeFromStock(3);
-        $this->assertSame(3, $inventory->getOnHand());
-        $this->assertSame(3, $inventory->getAvailable());
-
-        // todo: set a location for the inventory
-
-        // todo: remove from stock by passing in Reservation object
-
-        $this->setExpectedException('RangeException');
-        $inventory = $this->createInventory();
-        $inventory->removeFromStock(6);
-    }
-
     protected function createInventoryManager()
     {
         $inv = new InventoryManager(self::createTestDocumentManager(), '\Vespolina\InventoryBundle\Tests\Fixtures\Document\Inventory');
 
-        return $inv;
-    }
-
-    protected function createInventory($product = null, $identifierSet = null)
-    {
-        $product = $product ? $product : 'product';
-        $inv = new Inventory($product, $identifierSet);
 
         return $inv;
     }

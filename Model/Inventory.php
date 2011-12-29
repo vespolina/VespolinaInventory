@@ -17,6 +17,7 @@ use Vespolina\ProductBundle\Model\Identifier\IdentifierInterface;  //TODO move t
 abstract class Inventory implements InventoryInterface
 {
     protected $available;
+    protected $createdAt;
     protected $detailedCount;
     protected $identifier;
     protected $identifierSet;

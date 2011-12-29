@@ -26,35 +26,52 @@ class InventoryManager extends AbstractInventoryManager
     /**
      * @inheritdoc
      */
+    public function createInventory($product, $identifierSet = null)
+    {
+        $inv = new $this->inventoryClass($product, $identifierSet);
+        $this->dm->persist($inv);
+        $this->dm->flush();
+
+        return $inv;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function addToStock($inventory, $items, $location = null)
     {
-
         if ($location) {
             throw new \Exception('not implemented');
         }
 
-        $inventoryData = $this->dm->createQueryBuilder()
+        $loadedInventory = $this->dm->createQueryBuilder($this->inventoryClass)
             ->findAndUpdate()
-            ->field('_id')->equals(new \MongoId($inventory->getId()))
+            ->field('id')->equals($inventory->getId())
             ->field('inProgress')->equals(false)
-            ->update()
             ->field('inProgress')->set(true)
-            ->field('started')->set(new \MongoDate())
+            ->field('processStarted')->set(new \MongoDate())
             ->getQuery()
             ->execute()
         ;
 // todo: need some test here
 
-        $onHand = $inventoryData['onHand'] + $items;
-        $available = $inventoryData['available'] + $items;
+        $ohp = new \ReflectionProperty($this->inventoryClass, 'onHand');
+        $ohp->setAccessible(true);
+        $onHand = $ohp->getValue($loadedInventory) + $items;
+        $ohp->setValue($loadedInventory, $onHand);
+
+        $ap = new \ReflectionProperty($this->inventoryClass, 'available');
+        $ap->setAccessible(true);
+        $available = $ap->getValue($loadedInventory) + $items;
+        $ap->setValue($loadedInventory, $available);
 
         $this->dm->createQueryBuilder($this->inventoryClass)
             ->findAndUpdate()
-            ->field('_id')->equals(new \MongoId($inventory->getId()))
-            ->update()
+            ->field('id')->equals($inventory->getId())
             ->field('inProgress')->set(false)
-            ->field('onHand')->set($onHand)
-            ->field('available')->set($available)
+            ->field('onHand')->set($loadedInventory->getOnHand())
+            ->field('available')->set($loadedInventory->getAvailable())
+            ->field('processStarted')->unsetField()
             ->getQuery()
             ->execute()
         ;
@@ -62,18 +79,12 @@ class InventoryManager extends AbstractInventoryManager
         // todo: exit on failure
         // todo: remove from unit of work or does unsetting do it?
         $newInventory = clone $inventory;
-
         unset($inventory);
 
-        $ohp = new \ReflectionProperty($this->inventoryClass, 'onHand');
-        $ohp->setAccessible(true);
-        $ohp->setValue($newInventory, $onHand);
+//        $ap->setValue($newInventory, $loadedInventory);
+//        $ohp->setValue($newInventory, $onHand);
 
-        $ap = new \ReflectionProperty($this->inventoryClass, 'available');
-        $ap->setAccessible(true);
-        $ap->setValue($newInventory, $available);
-
-        return $newInventory;
+        return $loadedInventory;
     }
 
     /**

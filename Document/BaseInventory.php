@@ -16,8 +16,12 @@ use Vespolina\ProductBundle\Model\Identifier\IdentifierInterface;  //TODO move t
  */
 abstract class BaseInventory extends AbstractInventory
 {
+    protected $inProgress;
+
     public function __construct($product, $identifierSet = null)
     {
         parent::__construct($product, $identifierSet);
+        $this->inProgress = false;
     }
+
 }

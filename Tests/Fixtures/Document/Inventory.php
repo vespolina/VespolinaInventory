@@ -7,16 +7,33 @@
  */
 namespace Vespolina\InventoryBundle\Tests\Fixtures\Document;
 
-use Vespolina\InventoryBundle\Model\Inventory as BaseInventory;
-use Vespolina\ProductBundle\Model\Identifier\IdentifierInterface;  //TODO move to CoreBundle
+use Vespolina\InventoryBundle\Document\BaseInventory as BaseInventory;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
 /**
  * @author Richard Shank <develop@zestic.com>
  */
+/**
+ * @ODM\Document(collection="vespolina_inventory")
+ */
 class Inventory extends BaseInventory
 {
+    /** @ODM\Id */
+    protected $id;
+
+    /** @ODM\Boolean */
+    protected $inProgress;
+
+    /** @ODM\Date */
+    protected $processStarted;
+
     public function __construct($product, $identifierSet = null)
     {
         parent::__construct($product, $identifierSet);
+    }
+
+    public function getId()
+    {
+        return $this->id;
     }
 }
