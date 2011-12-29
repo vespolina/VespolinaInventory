@@ -60,11 +60,11 @@ class InventoryManagerTest extends TestCase
         $inventory = $mgr->createInventory('product');
         $mgr->addToInventory($inventory, 6);
 
-        $reservation = $mgr->reserve($inventory);
+        $reservation = $mgr->reserve($inventory, 'order');
         $this->assertInstanceOf('\Vespolina\InventoryBundle\Model\ReservationInterface', $reservation);
         $this->assertSame(5, $inventory->getAvailable(), 'no items amount should default to 1');
 
-        $mgr->reserve($inventory, 2);
+        $mgr->reserve($inventory, 'order', 2);
 
         $this->assertSame(3, $inventory->getAvailable());
         $this->assertSame(6, $inventory->getOnHand());
@@ -77,10 +77,32 @@ class InventoryManagerTest extends TestCase
         // todo: set a location for the inventory
     }
 
+    public function testSetOnHandInventory()
+    {
+        $mgr = $this->createInventoryManager();
+
+        $inventory = $mgr->createInventory('product');
+        $mgr->addToInventory($inventory, 3);
+
+        $inventory = $mgr->setInventoryOnHand($inventory, 6);
+        $this->assertSame(6, $inventory->getOnHand());
+        $this->assertSame(6, $inventory->getAvailable());
+
+        $this->markIncomplete('reserving items has not been implemented yet');
+
+        $mgr->reserve($inventory, 'order');
+        $inventory = $mgr->setOnHandInventory($inventory, 8);
+        $this->assertSame(8, $inventory->getOnHand());
+        $this->assertSame(7, $inventory->getAvailable());
+
+        $this->setExpectedException('RangeException');
+        $mgr->reserve($inventory, 'order', 3);
+        $mgr->setOnHandInventory($inventory, 2);
+    }
+
     protected function createInventoryManager()
     {
         $inv = new InventoryManager(self::createTestDocumentManager(), '\Vespolina\InventoryBundle\Tests\Fixtures\Document\Inventory');
-
 
         return $inv;
     }

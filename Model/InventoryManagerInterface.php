@@ -86,16 +86,15 @@ interface InventoryManagerInterface
                          StorageLocationInterface $storageLocation);
 */
     /**
-     * Update the inventory information based on the supplied InventoryInterface instance
+     * Update the items in the inventory to a set count
      *
-     * @abstract
-     * @param InventoryInterface $inventory
-     * @return void
-     *
+     * @param Vespolina\InventoryBundle\Model\InventoryInterface $inventory
+     * @param integer $itemCnt
+     * @param optional $location
+
+     * @return Vespolina\InventoryBundle\Model\InventoryInterface
      */
-/*
-    function updateInventory(InventoryInterface $inventory);
-*/
+    public function setInventoryOnHand(InventoryInterface $inventory, $itemCnt, $location = null);
 
     /**
      * Return the count for a given inventory id.

@@ -85,4 +85,12 @@ abstract class InventoryManager implements InventoryManagerInterface
             return $loadedInventory;
         }
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function setInventoryOnHand(InventoryInterface $inventory, $itemCnt, $location = null)
+    {
+
+    }
 }
