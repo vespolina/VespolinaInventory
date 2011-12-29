@@ -26,7 +26,7 @@ class InventoryManager extends AbstractInventoryManager
     /**
      * @inheritdoc
      */
-    public function createInventory($product, $identifierSet = null)
+    public function createInventory(InventoryInterface $product, $identifierSet = null)
     {
         $inv = new $this->inventoryClass($product, $identifierSet);
         $this->dm->persist($inv);
@@ -38,7 +38,7 @@ class InventoryManager extends AbstractInventoryManager
     /**
      * @inheritdoc
      */
-    public function addToStock($inventory, $items, $location = null)
+    public function addToInventory(InventoryInterface $inventory, $itemCnt, $location = null)
     {
         if ($location) {
             throw new \Exception('not implemented');
@@ -57,12 +57,12 @@ class InventoryManager extends AbstractInventoryManager
 
         $ohp = new \ReflectionProperty($this->inventoryClass, 'onHand');
         $ohp->setAccessible(true);
-        $onHand = $ohp->getValue($loadedInventory) + $items;
+        $onHand = $ohp->getValue($loadedInventory) + $itemCnt;
         $ohp->setValue($loadedInventory, $onHand);
 
         $ap = new \ReflectionProperty($this->inventoryClass, 'available');
         $ap->setAccessible(true);
-        $available = $ap->getValue($loadedInventory) + $items;
+        $available = $ap->getValue($loadedInventory) + $itemCnt;
         $ap->setValue($loadedInventory, $available);
 
         $this->dm->createQueryBuilder($this->inventoryClass)
@@ -90,14 +90,13 @@ class InventoryManager extends AbstractInventoryManager
     /**
      * @inheritdoc
      */
-    public function removeFromStock($inventory, $items, $location = null)
+    public function removeFromInventory(InventoryInterface $inventory, $itemCnt, $location = null)
     {
-
-        if ($items > $this->onHand) {
-            throw new \RangeException(sprintf('There are only %s items in the inventory, so %s items cannot be removed', $this->count, $items));
+        if ($itemCnt > $this->onHand) {
+            throw new \RangeException(sprintf('There are only %s items in the inventory, so %s items cannot be removed', $this->count, $itemCnt));
         }
-        $this->onHand -= (int)$items;
-        $this->available -= (int)$items;
+        $this->onHand -= (int)$itemCnt;
+        $this->available -= (int)$itemCnt;
         if ($location) {
             throw new \Exception('not implemented');
         }
@@ -106,11 +105,27 @@ class InventoryManager extends AbstractInventoryManager
     /**
      * @inheritdoc
      */
-    public function reserve($inventory, $items = null)
+    public function reserve(InventoryInterface $inventory, $reservedBy, $itemCnt = null)
     {
-        $items = $items ? $items : 1;
+        $itemCnt = $itemCnt ? $itemCnt : 1;
 
-        $this->available -= $items;
+        $this->available -= $itemCnt;
+
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function releaseReserved(InventoryInterface $inventory, $reservedBy, $itemCnt = null)
+    {
+
+    }
+
+    /**
+     * @inheritdoc
+     */
+    function getCount(InventoryInterface $inventory, WarehouseInterface $warehouse = null, StorageLocationInterface $storageLocation = null)
+    {
 
     }
 }

@@ -30,29 +30,41 @@ interface InventoryManagerInterface
      * Add items to the inventory.
      *
      * @param Vespolina\InventoryBundle\Model\InventoryInterface $inventory
-     * @param integer $items
+     * @param integer $itemCnt
      * @param optional $location
      */
-    function addToStock($inventory, $items, $location = null);
+    function addToInventory(InventoryInterface $inventory, $itemCnt, $location = null);
 
     /**
      * Remove items from the inventory.
      *
      * @param Vespolina\InventoryBundle\Model\InventoryInterface $inventory
-     * @param integer $items
+     * @param integer $itemCnt
      * @param optional $location
      */
-    function removeFromStock($inventory, $items, $location = null);
+    function removeFromInventory(InventoryInterface $inventory, $itemCnt, $location = null);
 
     /**
      * Reserve an number of product items for a specific sale.
      *
      * @param Vespolina\InventoryBundle\Model\InventoryInterface $inventory
+     * @param mixed $reservedBy who is reserving the items
      * @param integer the number of items to be reserved, no value defaults to 1
      *
      * @return Vespolina\InventoryBundle\Model\InventoryReservationInterface
      */
-    function reserve($inventory, $items = null);
+    function reserve(InventoryInterface $inventory, $reservedBy, $itemCnt = null);
+
+    /**
+     * Release a number of reserved product items
+     *
+     * @param Vespolina\InventoryBundle\Model\InventoryInterface $inventory
+     * @param mixed $reservedBy who is reserving the items
+     * @param integer the number of items to be reserved, no value defaults to 1
+     *
+     * @return Vespolina\InventoryBundle\Model\InventoryInterface
+     */
+    function releaseReserved(InventoryInterface $inventory, $reservedBy, $itemCnt = null);
 
     /**
      * Update the inventory information with the inventory size of a single id
@@ -95,9 +107,8 @@ interface InventoryManagerInterface
      * @param null|StorageLocationInterface $storageLocation
      * @return void
      */
-/*
-    function getCountForInventory(IdentifierInterface $identifier,
+    function getCount(InventoryInterface $inventory,
                                   WarehouseInterface $warehouse = null,
                                   StorageLocationInterface $storageLocation = null);
-*/
+
 }
