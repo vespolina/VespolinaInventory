@@ -49,4 +49,40 @@ abstract class InventoryManager implements InventoryManagerInterface
         // todo: remove from unit of work or does unsetting do it?
 
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function removeFromInventory(InventoryInterface $inventory, $itemCnt, $location = null)
+    {
+        if ($location) {
+            throw new \Exception('not implemented');
+        }
+
+        $loadedInventory = $this->lockAndLoad($inventory);
+
+        if ($itemCnt > $loadedInventory->getOnHand()) {
+            throw new \RangeException(sprintf('There are only %s items in the inventory, so %s items cannot be removed', $loadedInventory->getOnHand(), $itemCnt));
+        }
+
+        $ohp = new \ReflectionProperty($this->inventoryClass, 'onHand');
+        $ohp->setAccessible(true);
+        $onHand = $ohp->getValue($loadedInventory) - $itemCnt;
+        $ohp->setValue($loadedInventory, $onHand);
+
+        $ap = new \ReflectionProperty($this->inventoryClass, 'available');
+        $ap->setAccessible(true);
+        $available = $ap->getValue($loadedInventory) - $itemCnt;
+        $ap->setValue($loadedInventory, $available);
+
+        $changes = array(
+            'onHand' => $loadedInventory->getOnHand(),
+            'available' => $loadedInventory->getAvailable(),
+        );
+        if ($this->saveAndUnlock($loadedInventory, $changes)) {
+            unset($inventory);
+
+            return $loadedInventory;
+        }
+    }
 }

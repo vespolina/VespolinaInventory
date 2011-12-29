@@ -41,7 +41,7 @@ class InventoryManagerTest extends TestCase
         $inventory = $mgr->createInventory('product');
         $mgr->addToInventory($inventory, 6);
 
-        $mgr->removeFromInventory($inventory, 3);
+        $inventory = $mgr->removeFromInventory($inventory, 3);
         $this->assertSame(3, $inventory->getOnHand());
         $this->assertSame(3, $inventory->getAvailable());
 

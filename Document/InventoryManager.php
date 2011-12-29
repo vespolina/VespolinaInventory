@@ -41,21 +41,6 @@ class InventoryManager extends AbstractInventoryManager
     /**
      * @inheritdoc
      */
-    public function removeFromInventory(InventoryInterface $inventory, $itemCnt, $location = null)
-    {
-        if ($itemCnt > $this->onHand) {
-            throw new \RangeException(sprintf('There are only %s items in the inventory, so %s items cannot be removed', $this->count, $itemCnt));
-        }
-        $this->onHand -= (int)$itemCnt;
-        $this->available -= (int)$itemCnt;
-        if ($location) {
-            throw new \Exception('not implemented');
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function reserve(InventoryInterface $inventory, $reservedBy, $itemCnt = null)
     {
         $itemCnt = $itemCnt ? $itemCnt : 1;
