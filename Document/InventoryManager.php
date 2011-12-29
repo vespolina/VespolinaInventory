@@ -7,7 +7,10 @@
  */
 namespace Vespolina\InventoryBundle\Document;
 
+use Vespolina\InventoryBundle\Model\InventoryInterface;
 use Vespolina\InventoryBundle\Model\InventoryManager as AbstractInventoryManager;
+use Vespolina\InventoryBundle\Model\StorageLocationInterface;
+use Vespolina\InventoryBundle\Model\WarehouseInterface;
 
 /**
  * @author Richard Shank <develop@zestic.com>
@@ -26,65 +29,13 @@ class InventoryManager extends AbstractInventoryManager
     /**
      * @inheritdoc
      */
-    public function createInventory(InventoryInterface $product, $identifierSet = null)
+    public function createInventory($product, $identifierSet = null)
     {
         $inv = new $this->inventoryClass($product, $identifierSet);
         $this->dm->persist($inv);
         $this->dm->flush();
 
         return $inv;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function addToInventory(InventoryInterface $inventory, $itemCnt, $location = null)
-    {
-        if ($location) {
-            throw new \Exception('not implemented');
-        }
-
-        $loadedInventory = $this->dm->createQueryBuilder($this->inventoryClass)
-            ->findAndUpdate()
-            ->field('id')->equals($inventory->getId())
-            ->field('inProgress')->equals(false)
-            ->field('inProgress')->set(true)
-            ->field('processStarted')->set(new \MongoDate())
-            ->getQuery()
-            ->execute()
-        ;
-// todo: need some test here
-
-        $ohp = new \ReflectionProperty($this->inventoryClass, 'onHand');
-        $ohp->setAccessible(true);
-        $onHand = $ohp->getValue($loadedInventory) + $itemCnt;
-        $ohp->setValue($loadedInventory, $onHand);
-
-        $ap = new \ReflectionProperty($this->inventoryClass, 'available');
-        $ap->setAccessible(true);
-        $available = $ap->getValue($loadedInventory) + $itemCnt;
-        $ap->setValue($loadedInventory, $available);
-
-        $this->dm->createQueryBuilder($this->inventoryClass)
-            ->findAndUpdate()
-            ->field('id')->equals($inventory->getId())
-            ->field('inProgress')->set(false)
-            ->field('onHand')->set($loadedInventory->getOnHand())
-            ->field('available')->set($loadedInventory->getAvailable())
-            ->field('processStarted')->unsetField()
-            ->getQuery()
-            ->execute()
-        ;
-
-        // todo: exit on failure
-        // todo: remove from unit of work or does unsetting do it?
-        $newInventory = clone $inventory;
-        unset($inventory);
-
-//        $ap->setValue($newInventory, $loadedInventory);
-//        $ohp->setValue($newInventory, $onHand);
-
-        return $loadedInventory;
     }
 
     /**
@@ -124,8 +75,45 @@ class InventoryManager extends AbstractInventoryManager
     /**
      * @inheritdoc
      */
-    function getCount(InventoryInterface $inventory, WarehouseInterface $warehouse = null, StorageLocationInterface $storageLocation = null)
+    public function getCount(InventoryInterface $inventory, WarehouseInterface $warehouse = null, StorageLocationInterface $storageLocation = null)
     {
 
+    }
+
+    protected function lockAndLoad($inventory)
+    {
+        do {
+            $loadedInventory = $this->dm->createQueryBuilder($this->inventoryClass)
+                ->findAndUpdate()
+                ->field('id')->equals($inventory->getId())
+                ->field('inProgress')->equals(false)
+                ->field('inProgress')->set(true)
+                ->field('processStarted')->set(new \MongoDate())
+                ->getQuery()
+                ->execute()
+            ;
+        } while(!$loadedInventory instanceof InventoryInterface);
+
+        return $loadedInventory;
+    }
+
+    protected function saveAndUnlock($inventory, $changes)
+    {
+        $qb = $this->dm->createQueryBuilder($this->inventoryClass)
+            ->findAndUpdate()
+            ->field('id')->equals($inventory->getId())
+            ->field('inProgress')->set(false)
+            ->field('processStarted')->unsetField();
+
+        foreach($changes as $field => $value) {
+            $qb->field($field)->set($value);
+        }
+
+        $qb->getQuery()
+            ->execute()
+        ;
+
+        // todo: check for failing conditions
+        return true;
     }
 }

@@ -23,11 +23,11 @@ class InventoryManagerTest extends TestCase
 
         $inventory = $mgr->createInventory('product');
 
-        $inventory = $mgr->addToStock($inventory, 3);
+        $inventory = $mgr->addToInventory($inventory, 3);
         $this->assertSame(3, $inventory->getOnHand());
         $this->assertSame(3, $inventory->getAvailable());
 
-        $inventory = $mgr->addToStock($inventory, 3);
+        $inventory = $mgr->addToInventory($inventory, 3);
         $this->assertSame(6, $inventory->getOnHand());
         $this->assertSame(6, $inventory->getAvailable());
 
@@ -39,9 +39,9 @@ class InventoryManagerTest extends TestCase
         $mgr = $this->createInventoryManager();
 
         $inventory = $mgr->createInventory('product');
-        $mgr->addToStock($inventory, 6);
+        $mgr->addToInventory($inventory, 6);
 
-        $mgr->removeFromStock($inventory, 3);
+        $mgr->removeFromInventory($inventory, 3);
         $this->assertSame(3, $inventory->getOnHand());
         $this->assertSame(3, $inventory->getAvailable());
 
@@ -51,14 +51,14 @@ class InventoryManagerTest extends TestCase
 
         $this->setExpectedException('RangeException');
         $inventory = $mgr->createInventory('product');
-        $mgr->removeFromStock($inventory, 6);
+        $mgr->removeFromInventory($inventory, 6);
     }
 
     public function testReserve()
     {
         $mgr = $this->createInventoryManager();
         $inventory = $mgr->createInventory('product');
-        $mgr->addToStock($inventory, 6);
+        $mgr->addToInventory($inventory, 6);
 
         $reservation = $mgr->reserve($inventory);
         $this->assertInstanceOf('\Vespolina\InventoryBundle\Model\ReservationInterface', $reservation);
