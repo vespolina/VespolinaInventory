@@ -16,12 +16,20 @@ use Vespolina\ProductBundle\Model\Identifier\IdentifierInterface;  //TODO move t
  */
 abstract class Inventory implements InventoryInterface
 {
-
+    protected $available;
+    protected $createdAt;
     protected $detailedCount;
     protected $identifier;
-    protected $count;
+    protected $identifierSet;
+    protected $onHand;
+    protected $product;
     protected $updatedAt;
-    
+
+    public function __construct($product, $identifierSet = null)
+    {
+        $this->product = $product;
+        $this->identifierSet = $identifierSet;
+    }
 
     /**
      * @inheritdoc
@@ -44,27 +52,10 @@ abstract class Inventory implements InventoryInterface
     /**
      * @inheritdoc
      */
-    function getCount()
-    {
-
-        return $this->count;
-    }
-
-    /**
-     * @inheritdoc
-     */
     function getUpdatedAt()
     {
 
         return $this->updatedAt;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    function setDetailedCount($detailedCount)
-    {
-        $this->detailedCount = $detailedCount;
     }
 
     /**
@@ -79,10 +70,16 @@ abstract class Inventory implements InventoryInterface
     /**
      * @inheritdoc
      */
-    function setCount($count)
+    public function getAvailable()
     {
-
-        $this->count = $count;
+        return $this->available;
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function getOnHand()
+    {
+        return $this->onHand;
+    }
 }

@@ -18,6 +18,53 @@ use Vespolina\ProductBundle\Model\Identifier\IdentifierInterface;  //TODO move t
  */
 interface InventoryManagerInterface
 {
+    /**
+     * @abstract
+     * @param $product
+     *
+     * @return Vespolina\InventoryBundle\Model\InventoryInterface
+     */
+    function createInventory($product, $identifierSet = null);
+
+    /**
+     * Add items to the inventory.
+     *
+     * @param Vespolina\InventoryBundle\Model\InventoryInterface $inventory
+     * @param integer $itemCnt
+     * @param optional $location
+     */
+    function addToInventory(InventoryInterface $inventory, $itemCnt, $location = null);
+
+    /**
+     * Remove items from the inventory.
+     *
+     * @param Vespolina\InventoryBundle\Model\InventoryInterface $inventory
+     * @param integer $itemCnt
+     * @param optional $location
+     */
+    function removeFromInventory(InventoryInterface $inventory, $itemCnt, $location = null);
+
+    /**
+     * Reserve an number of product items for a specific sale.
+     *
+     * @param Vespolina\InventoryBundle\Model\InventoryInterface $inventory
+     * @param mixed $reservedBy who is reserving the items
+     * @param integer the number of items to be reserved, no value defaults to 1
+     *
+     * @return Vespolina\InventoryBundle\Model\InventoryReservationInterface
+     */
+    function reserve(InventoryInterface $inventory, $reservedBy, $itemCnt = null);
+
+    /**
+     * Release a number of reserved product items
+     *
+     * @param Vespolina\InventoryBundle\Model\InventoryInterface $inventory
+     * @param mixed $reservedBy who is reserving the items
+     * @param integer the number of items to be reserved, no value defaults to 1
+     *
+     * @return Vespolina\InventoryBundle\Model\InventoryInterface
+     */
+    function releaseReserved(InventoryInterface $inventory, $reservedBy, $itemCnt = null);
 
     /**
      * Update the inventory information with the inventory size of a single id
@@ -32,23 +79,22 @@ interface InventoryManagerInterface
      *          =200 : set stock level to 200
      * @return void
      */
+/*
     function updateCount(IdentifierInterface $identifier,
                          $updateOperation,
                          WarehouseInterface $warehouse = null,
                          StorageLocationInterface $storageLocation);
-
-
+*/
     /**
-     * Update the inventory information based on the supplied InventoryInterface instance
+     * Update the items in the inventory to a set count
      *
-     * @abstract
-     * @param InventoryInterface $inventory
-     * @return void
-     *
+     * @param Vespolina\InventoryBundle\Model\InventoryInterface $inventory
+     * @param integer $itemCnt
+     * @param optional $location
+
+     * @return Vespolina\InventoryBundle\Model\InventoryInterface
      */
-    function updateInventory(InventoryInterface $inventory);
-
-
+    public function setInventoryOnHand(InventoryInterface $inventory, $itemCnt, $location = null);
 
     /**
      * Return the count for a given inventory id.
@@ -60,8 +106,17 @@ interface InventoryManagerInterface
      * @param null|StorageLocationInterface $storageLocation
      * @return void
      */
-    function getCountForInventory(IdentifierInterface $identifier,
+    function getCount(InventoryInterface $inventory,
                                   WarehouseInterface $warehouse = null,
                                   StorageLocationInterface $storageLocation = null);
 
+    /**
+     * Return all of the available inventory for a specific product / identifierSet
+     *
+     * @param $product
+     * @param null $identifierSet
+     *
+     * @return array
+     */
+    function getInventoryForProduct($product, $identifierSet = null);
 }
