@@ -14,7 +14,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
  * @author Richard Shank <develop@zestic.com>
  */
 /**
- * @ODM\Document(collection="vespolina_inventory")
+ * @ODM\Document(collection="vespolinaInventory")
  */
 class Inventory extends BaseInventory
 {
@@ -26,6 +26,14 @@ class Inventory extends BaseInventory
 
     /** @ODM\Date */
     protected $processStarted;
+
+    /** @ODM\String */
+    protected $identifierSet;
+
+    /**
+     * @ODM\ReferenceOne(targetDocument="Vespolina\InventoryBundle\Tests\Fixtures\Document\Product")
+     */
+    protected $product;
 
     public function __construct($product, $identifierSet = null)
     {

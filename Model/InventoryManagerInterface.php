@@ -24,7 +24,7 @@ interface InventoryManagerInterface
      *
      * @return Vespolina\InventoryBundle\Model\InventoryInterface
      */
-    function createInventory($product);
+    function createInventory($product, $identifierSet = null);
 
     /**
      * Add items to the inventory.
@@ -110,4 +110,13 @@ interface InventoryManagerInterface
                                   WarehouseInterface $warehouse = null,
                                   StorageLocationInterface $storageLocation = null);
 
+    /**
+     * Return all of the available inventory for a specific product / identifierSet
+     *
+     * @param $product
+     * @param null $identifierSet
+     *
+     * @return array
+     */
+    function getInventoryForProduct($product, $identifierSet = null);
 }

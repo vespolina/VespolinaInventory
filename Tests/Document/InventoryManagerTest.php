@@ -9,6 +9,7 @@ namespace Vespolina\InventoryBundle\Tests\Document;
 
 use Vespolina\InventoryBundle\Document\InventoryManager;
 use Vespolina\InventoryBundle\Tests\Fixtures\Document\Inventory;
+use Vespolina\InventoryBundle\Tests\Fixtures\Document\Product;
 
 use Symfony\Bundle\DoctrineMongoDBBundle\Tests\TestCase;
 
@@ -17,11 +18,26 @@ use Symfony\Bundle\DoctrineMongoDBBundle\Tests\TestCase;
  */
 class InventoryManagerTest extends TestCase
 {
+    protected $dm;
+
+    public function setUp()
+    {
+        $this->dm = self::createTestDocumentManager();
+    }
+
+    public function tearDown()
+    {
+        $collections = $this->dm->getDocumentCollections();
+        foreach ($collections as $collection) {
+            $collection->drop();
+        }
+    }
+
     public function testAddToStock()
     {
         $mgr = $this->createInventoryManager();
 
-        $inventory = $mgr->createInventory('product');
+        $inventory = $mgr->createInventory($this->createProduct('product'));
 
         $inventory = $mgr->addToInventory($inventory, 3);
         $this->assertSame(3, $inventory->getOnHand());
@@ -38,7 +54,7 @@ class InventoryManagerTest extends TestCase
     {
         $mgr = $this->createInventoryManager();
 
-        $inventory = $mgr->createInventory('product');
+        $inventory = $mgr->createInventory($this->createProduct('product'));
         $mgr->addToInventory($inventory, 6);
 
         $inventory = $mgr->removeFromInventory($inventory, 3);
@@ -50,7 +66,7 @@ class InventoryManagerTest extends TestCase
         // todo: remove from stock by passing in Reservation object
 
         $this->setExpectedException('RangeException');
-        $inventory = $mgr->createInventory('product');
+        $inventory = $mgr->createInventory($this->createProduct('product'));
         $mgr->removeFromInventory($inventory, 6);
     }
 
@@ -59,7 +75,7 @@ class InventoryManagerTest extends TestCase
         $this->markTestIncomplete('reserving items has not been implemented yet');
 
         $mgr = $this->createInventoryManager();
-        $inventory = $mgr->createInventory('product');
+        $inventory = $mgr->createInventory($this->createProduct('product'));
         $mgr->addToInventory($inventory, 6);
 
         $reservation = $mgr->reserve($inventory, 'order');
@@ -83,7 +99,7 @@ class InventoryManagerTest extends TestCase
     {
         $mgr = $this->createInventoryManager();
 
-        $inventory = $mgr->createInventory('product');
+        $inventory = $mgr->createInventory($this->createProduct('product'));
         $mgr->addToInventory($inventory, 3);
 
         $inventory = $mgr->setInventoryOnHand($inventory, 6);
@@ -102,10 +118,37 @@ class InventoryManagerTest extends TestCase
         $mgr->setOnHandInventory($inventory, 2);
     }
 
+    public function testGetInventoryForProduct()
+    {
+        $mgr = $this->createInventoryManager();
+        $product = $this->createProduct('test');
+        $alpha = $mgr->createInventory($product, 'alpha');
+        $mgr->addToInventory($alpha, 3);
+        $beta = $mgr->createInventory($product, 'beta');
+        $mgr->addToInventory($beta, 4);
+
+        $inventory = $mgr->getInventoryForProduct($product, 'alpha');
+        $this->assertEquals($alpha->getId(), $inventory->getId(), 'load a single result when identifier passed');
+
+        $inventory = $mgr->getInventoryForProduct($product);
+        $this->assertSame(2, $inventory->count());
+    }
+
     protected function createInventoryManager()
     {
-        $inv = new InventoryManager(self::createTestDocumentManager(), '\Vespolina\InventoryBundle\Tests\Fixtures\Document\Inventory');
+        $inv = new InventoryManager($this->dm, '\Vespolina\InventoryBundle\Tests\Fixtures\Document\Inventory');
 
         return $inv;
+    }
+
+    protected function createProduct($name)
+    {
+        $product = new Product();
+        $product->setName($name);
+
+        $this->dm->persist($product);
+        $this->dm->flush();
+
+        return $product;
     }
 }
