@@ -68,13 +68,13 @@ class InventoryManager extends AbstractInventoryManager
     /**
      * @inheritdoc
      */
-    public function getInventoryForProduct($product, $identifierSet = null)
+    public function findInventoryForProduct($product, $optionSet = null)
     {
         $qb = $this->dm->CreateQueryBuilder($this->inventoryClass)
             ->find()
             ->field('product')->references($product);
-        if ($identifierSet) {
-            $qb->field('identifierSet')->equals($identifierSet);
+        if ($optionSet) {
+            $qb->field('optionSet')->equals($optionSet);
         }
         $results = $qb->getQuery()
             ->execute()

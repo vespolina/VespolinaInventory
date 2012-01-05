@@ -118,5 +118,5 @@ interface InventoryManagerInterface
      *
      * @return array
      */
-    function getInventoryForProduct($product, $identifierSet = null);
+    function findInventoryForProduct($product, $identifierSet = null);
 }
