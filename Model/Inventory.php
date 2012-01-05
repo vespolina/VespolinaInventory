@@ -20,15 +20,15 @@ abstract class Inventory implements InventoryInterface
     protected $createdAt;
     protected $detailedCount;
     protected $identifier;
-    protected $identifierSet;
     protected $onHand;
+    protected $optionSet;
     protected $product;
     protected $updatedAt;
 
-    public function __construct($product, $identifierSet = null)
+    public function __construct($product, $optionSet = null)
     {
         $this->product = $product;
-        $this->identifierSet = $identifierSet;
+        $this->optionSet = $optionSet;
     }
 
     /**
@@ -45,7 +45,6 @@ abstract class Inventory implements InventoryInterface
      */
     function getIdentifier()
     {
-
         return $this->identifier;
     }
 
@@ -54,7 +53,6 @@ abstract class Inventory implements InventoryInterface
      */
     function getUpdatedAt()
     {
-
         return $this->updatedAt;
     }
 
@@ -63,7 +61,6 @@ abstract class Inventory implements InventoryInterface
      */
     function setIdentifier(IdentifierInterface $identifier)
     {
-
         $this->identifier = $identifier;
     }
 
@@ -81,5 +78,13 @@ abstract class Inventory implements InventoryInterface
     public function getOnHand()
     {
         return $this->onHand;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getOptionSet()
+    {
+        return $this->optionSet;
     }
 }
