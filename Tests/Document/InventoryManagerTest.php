@@ -118,7 +118,7 @@ class InventoryManagerTest extends TestCase
         $mgr->setOnHandInventory($inventory, 2);
     }
 
-    public function testGetInventoryForProduct()
+    public function testFindInventoryForProduct()
     {
         $mgr = $this->createInventoryManager();
         $product = $this->createProduct('test');
@@ -127,10 +127,10 @@ class InventoryManagerTest extends TestCase
         $beta = $mgr->createInventory($product, 'beta');
         $mgr->addToInventory($beta, 4);
 
-        $inventory = $mgr->getInventoryForProduct($product, 'alpha');
+        $inventory = $mgr->findInventoryForProduct($product, 'alpha');
         $this->assertEquals($alpha->getId(), $inventory->getId(), 'load a single result when identifier passed');
 
-        $inventory = $mgr->getInventoryForProduct($product);
+        $inventory = $mgr->findInventoryForProduct($product);
         $this->assertSame(2, $inventory->count());
     }
 

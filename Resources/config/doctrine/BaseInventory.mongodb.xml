@@ -4,22 +4,14 @@
                         xsi:schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping
                         http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd">
 
-    <mapped-superclass name="Vespolina\ProductBundle\Document\BaseInventory" collection="vespolina_inventory">
+    <mapped-superclass name="Vespolina\InventoryBundle\Document\BaseInventory" collection="vespolinaInventory">
 
-        <field name="id" id="true" />
-
-        <field name="available" fieldName="available" type="int" />
-
+        <field name="available"     fieldName="available"     type="int" />
         <field name="detailedCount" fieldName="detailedCount" type="int" />
-
-        <field name="onHand" fieldName="onHand" type="int" />
-
-        <field name="inProgress" fieldName="inProgress" type="boolean" />
-
-        <field name="createdAt" fieldName="createdAt" type="date" />
-
-        <field name="updatedAt" fieldName="updatedAt" type="date" />
+        <field name="inProgress"    fieldName="inProgress"    type="boolean" />
+        <field name="onHand"        fieldName="onHand"        type="int" />
+        <field name="createdAt"     fieldName="createdAt"     type="date" />
+        <field name="updatedAt"     fieldName="updatedAt"     type="date" />
 
     </mapped-superclass>
-
 </doctrine-mongo-mapping>
