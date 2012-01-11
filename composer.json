@@ -1,14 +1,14 @@
 {
-    "name": "vespolina/invetory-bundle",
+    "name": "vespolina/inventory-bundle",
     "type": "symfony-bundle",
-    "description": "Vespolina Invetory bundle. Invetory management and more.",
-    "keywords": ["shop", "ecommerce", "invetory", "item"],
+    "description": "Vespolina Inventory bundle. Inventory management and more.",
+    "keywords": ["shop", "ecommerce", "inventory", "item"],
     "homepage": "http://vespolina-project.org",
     "license": "MIT",
     "authors": [
         {
             "name": "Vespolina Team",
-            "homepage": "https://github.com/vespolina/VespolinaInvetoryBundle/contributors"
+            "homepage": "https://github.com/vespolina/VespolinaInventoryBundle/contributors"
         }
     ],
     "require": {
@@ -22,8 +22,8 @@
         "doctrine/couchdb-odm-bundle": "*"
     },
     "autoload": {
-        "psr-0": { "Vespolina\\InvetoryBundle": "" }
+        "psr-0": { "Vespolina\\InventoryBundle": "" }
     },
-    "target-dir": "Vespolina/InvetoryBundle"
+    "target-dir": "Vespolina/InventoryBundle"
 }
 
