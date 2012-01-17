@@ -11,7 +11,7 @@ use Vespolina\InventoryBundle\Document\InventoryManager;
 use Vespolina\InventoryBundle\Tests\Fixtures\Document\Inventory;
 use Vespolina\InventoryBundle\Tests\Fixtures\Document\Product;
 
-use Symfony\Bundle\DoctrineMongoDBBundle\Tests\TestCase;
+use Doctrine\Bundle\MongoDBBundle\Tests\TestCase;
 
 /**
  * @author Richard D Shank <develop@zestic.com>
